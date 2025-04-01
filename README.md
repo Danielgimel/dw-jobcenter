@@ -16,6 +16,11 @@ A comprehensive job management system for QBCore Base FiveM servers with applica
 - QBCore Framework
 - oxmysql or mysql-async
 - qb-target or ox_target (optional but recommended)
+- dw-bossmenu - Not mandatory, you can use the built-in feature within the script but we recommend using dw-bossmenu for a complete experience.
+
+## DW-Bossmenu
+- Download - https://github.com/Danielgimel/dw-bossmenu
+
 
 ## Installation
 
@@ -127,4 +132,4 @@ This resource is licensed under the MIT License. See the LICENSE file for detail
 ![image](https://github.com/user-attachments/assets/8bcf054c-329d-4913-9f92-91ae9e34200c)
 ![image](https://github.com/user-attachments/assets/1c6a2eba-7c54-4cb7-8b52-8d91fad3c53c)
 ![image](https://github.com/user-attachments/assets/575e119d-9380-497b-856c-bea73bced49d)
-![image](https://github.com/user-attachments/assets/a263f7e0-4937-4813-8325-831f6118e2cd)  * - Using dw-bossmenu
+![image](https://github.com/user-attachments/assets/a263f7e0-4937-4813-8325-831f6118e2cd)  ** Using dw-bossmenu **
