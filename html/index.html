@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DW Job Center</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="job-center" class="hidden">
+        <div class="container">
+            <!-- Left sidebar - Job listings -->
+            <div class="sidebar">
+                <h1>Los Santos Job Center</h1>
+                
+                <!-- Search and filter -->
+                <div class="search-container">
+                    <div class="search-input">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="search-jobs" placeholder="Search jobs...">
+                    </div>
+                    
+                    <div class="filter-options">
+                        <button class="filter-btn active" data-filter="all">All Jobs</button>
+                        <button class="filter-btn" data-filter="civilian">Civilian</button>
+                        <button class="filter-btn" data-filter="whitelisted">Whitelisted</button>
+                    </div>
+                </div>
+                
+                <!-- Job list -->
+                <div class="job-list" id="job-list">
+                    <!-- Jobs will be dynamically populated here -->
+                </div>
+            </div>
+            
+            <!-- Right side - Job details or welcome screen -->
+            <div class="main-content">
+                <div id="welcome-screen">
+                    <div class="welcome-icon">💼</div>
+                    <h2>Welcome to the Job Center</h2>
+                    <p>Browse through available positions in Los Santos and find your dream job. Select a job from the list to view details and apply.</p>
+                </div>
+                
+                <div id="job-details" class="hidden">
+                    <!-- Close button -->
+                    <button id="close-details" class="close-btn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    
+                    <!-- Job details content -->
+                    <div class="details-content">
+                        <div class="job-header">
+                            <div id="job-icon" class="job-icon"></div>
+                            <h2 id="job-title"></h2>
+                            <p id="job-department"></p>
+                        </div>
+                        
+                        <!-- Job highlights -->
+                        <div class="job-highlights">
+                            <div class="highlight">
+                                <i class="fas fa-dollar-sign"></i>
+                                <div>
+                                    <p class="highlight-label">Salary</p>
+                                    <p id="job-salary" class="highlight-value"></p>
+                                </div>
+                            </div>
+                            <div class="highlight">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <div>
+                                    <p class="highlight-label">Location</p>
+                                    <p id="job-location" class="highlight-value"></p>
+                                </div>
+                            </div>
+                            <div class="highlight">
+                                <i class="fas fa-clock"></i>
+                                <div>
+                                    <p class="highlight-label">Schedule</p>
+                                    <p id="job-schedule" class="highlight-value"></p>
+                                </div>
+                            </div>
+                            <div class="highlight">
+                                <i class="fas fa-award"></i>
+                                <div>
+                                    <p class="highlight-label">Type</p>
+                                    <p id="job-type" class="highlight-value"></p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Description -->
+                        <div class="job-section">
+                            <h3>Description</h3>
+                            <p id="job-description"></p>
+                        </div>
+                        
+                        <!-- Requirements -->
+                        <div class="job-section">
+                            <h3>Requirements</h3>
+                            <ul id="job-requirements">
+                                <!-- Requirements will be populated here -->
+                            </ul>
+                        </div>
+                        
+                        <!-- Benefits -->
+                        <div class="job-section">
+                            <h3>Benefits</h3>
+                            <ul id="job-benefits">
+                                <!-- Benefits will be populated here -->
+                            </ul>
+                        </div>
+                        
+                        <!-- Apply button or application form -->
+                        <div id="job-actions" class="job-actions">
+                            <button id="apply-job-btn" class="action-btn">
+                                <i class="fas fa-user-check"></i>
+                                <span>Apply for this Position</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Application Form -->
+                <div id="application-form" class="hidden">
+                    <button id="back-to-details" class="back-btn">
+                        <i class="fas fa-arrow-left"></i> Back to Job Details
+                    </button>
+                    
+                    <div class="form-header">
+                        <h2>Application for <span id="application-job-title"></span></h2>
+                        <p>Please answer all questions carefully. Your responses will be reviewed by department managers.</p>
+                    </div>
+                    
+                    <div class="form-content">
+                        <div id="form-questions">
+                            <!-- Questions will be dynamically populated here -->
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button id="submit-application" class="action-btn">
+                                <i class="fas fa-paper-plane"></i>
+                                <span>Submit Application</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="review.js"></script>
+</body>
+</html>
