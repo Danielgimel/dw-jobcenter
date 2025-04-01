@@ -127,4 +127,4 @@ This resource is licensed under the MIT License. See the LICENSE file for detail
 ![image](https://github.com/user-attachments/assets/8bcf054c-329d-4913-9f92-91ae9e34200c)
 ![image](https://github.com/user-attachments/assets/1c6a2eba-7c54-4cb7-8b52-8d91fad3c53c)
 ![image](https://github.com/user-attachments/assets/575e119d-9380-497b-856c-bea73bced49d)
-https://cdn.discordapp.com/attachments/1154065692660862996/1356742996284014662/image.png?ex=67edace1&is=67ec5b61&hm=3a0e250c400bba4514c187fa0f939f7e0f541903221819d23cc1b4362a5c561c& - Using dw-bossmenu
+![image](https://github.com/user-attachments/assets/a263f7e0-4937-4813-8325-831f6118e2cd)  * - Using dw-bossmenu
