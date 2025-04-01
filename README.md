@@ -131,5 +131,7 @@ This resource is licensed under the MIT License. See the LICENSE file for detail
 ## Images
 ![image](https://github.com/user-attachments/assets/8bcf054c-329d-4913-9f92-91ae9e34200c)
 ![image](https://github.com/user-attachments/assets/1c6a2eba-7c54-4cb7-8b52-8d91fad3c53c)
-![image](https://github.com/user-attachments/assets/575e119d-9380-497b-856c-bea73bced49d) **Using the built-in feature**
-![image](https://github.com/user-attachments/assets/a263f7e0-4937-4813-8325-831f6118e2cd)  **Using dw-bossmenu**
+**Using the built-in feature**
+![image](https://github.com/user-attachments/assets/575e119d-9380-497b-856c-bea73bced49d)
+**Using dw-bossmenu**
+![image](https://github.com/user-attachments/assets/a263f7e0-4937-4813-8325-831f6118e2cd) 
