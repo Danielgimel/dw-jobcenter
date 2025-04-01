@@ -1,5 +1,3 @@
-![image](https://github.com/user-attachments/assets/b905b5ca-0f98-4f2a-9516-3eb9c0e50dfb)# DW Job Center
-
 A comprehensive job management system for QBCore Base FiveM servers with application processing and review functionality.
 ![image](https://github.com/user-attachments/assets/ab890beb-f1cd-427e-b922-347087d534c4)
 
