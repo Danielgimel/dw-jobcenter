@@ -1,6 +1,7 @@
-# DW Job Center
+![image](https://github.com/user-attachments/assets/b905b5ca-0f98-4f2a-9516-3eb9c0e50dfb)# DW Job Center
 
 A comprehensive job management system for QBCore Base FiveM servers with application processing and review functionality.
+![image](https://github.com/user-attachments/assets/ab890beb-f1cd-427e-b922-347087d534c4)
 
 ## Features
 
@@ -122,3 +123,9 @@ For support, questions, or feature requests, please join our Discord server - ht
 ## License
 
 This resource is licensed under the MIT License. See the LICENSE file for details.
+
+## Images
+![image](https://github.com/user-attachments/assets/8bcf054c-329d-4913-9f92-91ae9e34200c)
+![image](https://github.com/user-attachments/assets/1c6a2eba-7c54-4cb7-8b52-8d91fad3c53c)
+![image](https://github.com/user-attachments/assets/575e119d-9380-497b-856c-bea73bced49d)
+https://cdn.discordapp.com/attachments/1154065692660862996/1356742996284014662/image.png?ex=67edace1&is=67ec5b61&hm=3a0e250c400bba4514c187fa0f939f7e0f541903221819d23cc1b4362a5c561c& - Using dw-bossmenu
