@@ -1,4 +1,3 @@
-local QBCore = exports['qb-core']:GetCoreObject()
 local PlayerData = {}
 local jobCenterPedCreated = false
 local isJobCenterOpen = false
@@ -6,7 +5,34 @@ local isReviewOpen = false
 local jobCenterPed = nil
 local jobCenterBlip = nil
 
--- Functions
+Citizen.CreateThread(function()
+    while ESX == nil do
+        ESX = exports["es_extended"]:getSharedObject()
+        Citizen.Wait(0)
+    end
+
+    while ESX.GetPlayerData().job == nil do
+        Citizen.Wait(10)
+    end
+
+    PlayerData = ESX.GetPlayerData()
+    SetupJobCenter()
+    
+    if Config.ApplicationSystem == 'internal' then
+        SetupReviewPoints()
+    end
+end)
+
+RegisterNetEvent('esx:playerLoaded')
+function(xPlayer)
+    PlayerData = xPlayer
+end)
+
+RegisterNetEvent('esx:setJob')
+AddEventHandler('esx:setJob', function(job)
+    PlayerData.job = job
+end)
+
 local function DrawText3D(x, y, z, text)
     SetTextScale(0.35, 0.35)
     SetTextFont(4)
@@ -24,13 +50,11 @@ end
 
 local function CreateJobCenterBlip()
     if not Config.UseBlip then return end
-    
-    -- Remove existing blip if it exists
+
     if jobCenterBlip then
         RemoveBlip(jobCenterBlip)
     end
-    
-    -- Create new blip
+
     jobCenterBlip = AddBlipForCoord(Config.JobCenterLocation.x, Config.JobCenterLocation.y, Config.JobCenterLocation.z)
     SetBlipSprite(jobCenterBlip, Config.Blip.sprite)
     SetBlipDisplay(jobCenterBlip, 4)
@@ -44,31 +68,27 @@ end
 
 local function SetupJobCenterPed()
     if jobCenterPedCreated or jobCenterPed ~= nil then return end
-    
+
     local model = Config.JobCenterPed
     RequestModel(model)
     while not HasModelLoaded(model) do
-        Wait(0)
+        Citizen.Wait(0)
     end
-    
-    -- Use a consistent spawn position
+
     jobCenterPed = CreatePed(4, model, Config.JobCenterLocation.x, Config.JobCenterLocation.y, Config.JobCenterLocation.z - 1.0, Config.JobCenterLocation.w, false, true)
-    
     SetEntityHeading(jobCenterPed, Config.JobCenterLocation.w)
     FreezeEntityPosition(jobCenterPed, true)
     SetEntityInvincible(jobCenterPed, true)
     SetBlockingOfNonTemporaryEvents(jobCenterPed, true)
-    
     TaskStartScenarioInPlace(jobCenterPed, "WORLD_HUMAN_CLIPBOARD", 0, true)
-    
+
     jobCenterPedCreated = true
 end
 
 local function SetupTargetSystem()
     if not Config.UseTarget then return end
-    
+
     if Config.TargetSystem == 'qb' then
-        -- Setup for qb-target
         exports['qb-target']:AddBoxZone("jobcenter", Config.JobCenterLocation.xyz, 2.0, 2.0, {
             name = "jobcenter",
             heading = Config.JobCenterLocation.w,
@@ -87,7 +107,6 @@ local function SetupTargetSystem()
             distance = 2.0
         })
     elseif Config.TargetSystem == 'ox' then
-        -- Setup for ox_target
         exports.ox_target:addBoxZone({
             coords = Config.JobCenterLocation.xyz,
             size = vector3(2.0, 2.0, 2.0),
@@ -108,22 +127,18 @@ local function SetupTargetSystem()
 end
 
 local function SetupReviewPoints()
-    -- Skip if using external boss menu
     if Config.ApplicationSystem ~= 'internal' then return end
-    
-    -- Setup review points for each job
+
     for jobName, location in pairs(Config.ReviewLocations) do
-        -- Check if player has the required job and grade to access this point
         local canAccess = function()
             if not PlayerData.job then return false end
             if PlayerData.job.name ~= jobName then return false end
-            
+
             local minGrade = Config.Jobs[jobName].minReviewGrade or 1
-            return PlayerData.job.grade.level >= minGrade
+            return PlayerData.job.grade >= minGrade
         end
-        
+
         if Config.TargetSystem == 'qb' then
-            -- Setup for qb-target
             exports['qb-target']:AddBoxZone("review_"..jobName, location.pos, 1.0, 1.0, {
                 name = "review_"..jobName,
                 heading = 0.0,
@@ -145,7 +160,6 @@ local function SetupReviewPoints()
                 distance = 2.0
             })
         elseif Config.TargetSystem == 'ox' then
-            -- Setup for ox_target
             exports.ox_target:addBoxZone({
                 coords = location.pos,
                 size = vector3(1.0, 1.0, 1.0),
@@ -164,27 +178,23 @@ local function SetupReviewPoints()
                 }
             })
         else
-            -- Setup draw text for non-target systems
-            CreateThread(function()
+            Citizen.CreateThread(function()
                 while true do
                     local sleep = 1000
                     if canAccess() then
                         local pos = GetEntityCoords(PlayerPedId())
                         local dist = #(pos - location.pos)
-                        
                         if dist < 10 then
                             sleep = 0
-                            if dist < 1.5 then
-                                if not isReviewOpen then
-                                    DrawText3D(location.pos.x, location.pos.y, location.pos.z, "~g~E~w~ - " .. location.label)
-                                    if IsControlJustReleased(0, 38) then -- E key
-                                        TriggerEvent('dw-jobcenter:client:openReviewMenu', jobName)
-                                    end
+                            if dist < 1.5 and not isReviewOpen then
+                                DrawText3D(location.pos.x, location.pos.y, location.pos.z, "~g~E~w~ - " .. location.label)
+                                if IsControlJustReleased(0, 38) then
+                                    TriggerEvent('dw-jobcenter:client:openReviewMenu', jobName)
                                 end
                             end
                         end
                     end
-                    Wait(sleep)
+                    Citizen.Wait(sleep)
                 end
             end)
         end
@@ -193,50 +203,42 @@ end
 
 local function SetupDrawText()
     if Config.UseTarget then return end
-    
-    CreateThread(function()
+
+    Citizen.CreateThread(function()
         while true do
             local sleep = 1000
             local pos = GetEntityCoords(PlayerPedId())
             local dist = #(pos - Config.JobCenterLocation.xyz)
-            
             if dist < 10 then
                 sleep = 0
-                if dist < 1.5 then
-                    if not isJobCenterOpen then
-                        DrawText3D(Config.JobCenterLocation.x, Config.JobCenterLocation.y, Config.JobCenterLocation.z, "~g~E~w~ - Open Job Center")
-                        if IsControlJustReleased(0, 38) then -- E key
-                            TriggerEvent('dw-jobcenter:client:openJobCenter')
-                        end
+                if dist < 1.5 and not isJobCenterOpen then
+                    DrawText3D(Config.JobCenterLocation.x, Config.JobCenterLocation.y, Config.JobCenterLocation.z, "~g~E~w~ - Open Job Center")
+                    if IsControlJustReleased(0, 38) then
+                        TriggerEvent('dw-jobcenter:client:openJobCenter')
                     end
                 end
             end
-            Wait(sleep)
+            Citizen.Wait(sleep)
         end
     end)
 end
 
 local function SetupJobCenter()
-    -- Create blip on the map
     CreateJobCenterBlip()
-    
-    -- Setup target system or draw text based on config
     if Config.UseTarget then
         SetupTargetSystem()
     else
         SetupDrawText()
     end
-    
-    -- Create the job center ped
     SetupJobCenterPed()
 end
 
 local function OpenJobCenter()
     if isJobCenterOpen then return end
-    
+
     isJobCenterOpen = true
-    
-    QBCore.Functions.TriggerCallback('dw-jobcenter:server:getJobs', function(jobs, citizenid, playerName)
+
+    ESX.TriggerServerCallback('dw-jobcenter:server:getJobs', function(jobs, citizenid, playerName)
         SetNuiFocus(true, true)
         SendNUIMessage({
             action = "openJobCenter",
@@ -250,56 +252,42 @@ end
 
 local function CloseJobCenter()
     if not isJobCenterOpen then return end
-    
+
     SetNuiFocus(false, false)
-    SendNUIMessage({
-        action = "closeJobCenter"
-    })
-    
-    -- Reset state immediately
+    SendNUIMessage({ action = "closeJobCenter" })
     isJobCenterOpen = false
 end
 
 local function OpenReviewMenu(jobNameInput)
     if isReviewOpen then return end
-    
-    -- Get the actual job name (handle if it's a table)
-    local jobName = PlayerData.job.name -- Default to player's job
-    
-    -- Check if input is a table
+
+    local jobName = PlayerData.job.name
     if type(jobNameInput) == "table" then
-        -- See if there's a job field in the table
         if jobNameInput.job and type(jobNameInput.job) == "string" then
             jobName = jobNameInput.job
         end
     elseif type(jobNameInput) == "string" and jobNameInput ~= "" then
         jobName = jobNameInput
     end
-    
-    -- Validate the job exists in config
+
     if not Config.Jobs[jobName] then
-        QBCore.Functions.Notify('Invalid job configuration for: ' .. jobName, 'error')
+        ESX.ShowNotification('Invalid job configuration for: ' .. jobName)
         return
     end
-    
-    QBCore.Functions.Notify('Checking for applications...', 'primary')
+
+    ESX.ShowNotification('Checking for applications...')
     isReviewOpen = true
-    
-    QBCore.Functions.TriggerCallback('dw-jobcenter:server:getApplications', function(applications)
+
+    ESX.TriggerServerCallback('dw-jobcenter:server:getApplications', function(applications)
         if not applications or #applications == 0 then
-            QBCore.Functions.Notify('There are no applications to review', 'error')
+            ESX.ShowNotification('There are no applications to review')
             isReviewOpen = false
             return
         end
-        
-        QBCore.Functions.Notify('Found ' .. #applications .. ' applications', 'success')
-        
-        -- Set safe defaults for missing values
-        local jobLabel = "Unknown Job"
-        if Config.Jobs[jobName] and Config.Jobs[jobName].label then
-            jobLabel = Config.Jobs[jobName].label
-        end
-        
+
+        ESX.ShowNotification('Found ' .. #applications .. ' applications')
+        local jobLabel = Config.Jobs[jobName].label or "Unknown Job"
+
         SetNuiFocus(true, true)
         SendNUIMessage({
             action = "openReviewMenu",
@@ -312,40 +300,21 @@ end
 
 local function CloseReviewMenu()
     if not isReviewOpen then return end
-    
+
     SetNuiFocus(false, false)
-    SendNUIMessage({
-        action = "closeReviewMenu"
-    })
-    
-    -- Reset state immediately
+    SendNUIMessage({ action = "closeReviewMenu" })
     isReviewOpen = false
 end
 
-CreateThread(function()
+Citizen.CreateThread(function()
     while true do
-        Wait(0)
-        if isReviewOpen and IsControlJustReleased(0, 322) then -- ESC key
+        Citizen.Wait(0)
+        if isReviewOpen and IsControlJustReleased(0, 322) then
             CloseReviewMenu()
         end
     end
 end)
 
--- Initialize
-RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
-    PlayerData = QBCore.Functions.GetPlayerData() or {}
-    SetupJobCenter()
-    
-    if Config.ApplicationSystem == 'internal' then
-        SetupReviewPoints()
-    end
-end)
-
-RegisterNetEvent('QBCore:Client:OnJobUpdate', function(JobInfo)
-    PlayerData.job = JobInfo
-end)
-
--- Events
 RegisterNetEvent('dw-jobcenter:client:openJobCenter', function()
     OpenJobCenter()
 end)
@@ -363,10 +332,9 @@ RegisterNetEvent('dw-jobcenter:client:closeReviewMenu', function()
 end)
 
 RegisterNetEvent('dw-jobcenter:client:sendNotification', function(message, type)
-    QBCore.Functions.Notify(message, type)
+    ESX.ShowNotification(message)
 end)
 
--- NUI Callbacks
 RegisterNUICallback('closeJobCenter', function(_, cb)
     CloseJobCenter()
     cb('ok')
@@ -394,41 +362,33 @@ RegisterNUICallback('reviewApplication', function(data, cb)
     cb('ok')
 end)
 
--- Resource Initialization - only call once
 AddEventHandler('onResourceStart', function(resource)
     if resource ~= GetCurrentResourceName() then return end
-    
-    -- Initialize PlayerData
-    PlayerData = QBCore.Functions.GetPlayerData() or {}
-    
+    while ESX == nil do Citizen.Wait(10) end
+    PlayerData = ESX.GetPlayerData() or {}
     SetupJobCenter()
-    
     if Config.ApplicationSystem == 'internal' then
         SetupReviewPoints()
     end
 end)
 
--- Handle resource stopping
 AddEventHandler('onResourceStop', function(resource)
     if resource ~= GetCurrentResourceName() then return end
-    
-    -- Clean up when resource stops
+
     if isJobCenterOpen then
         SetNuiFocus(false, false)
     end
-    
+
     if isReviewOpen then
         SetNuiFocus(false, false)
     end
-    
-    -- Delete ped on resource stop
+
     if jobCenterPed ~= nil then
         DeletePed(jobCenterPed)
         jobCenterPed = nil
         jobCenterPedCreated = false
     end
-    
-    -- Remove blip on resource stop
+
     if jobCenterBlip ~= nil then
         RemoveBlip(jobCenterBlip)
         jobCenterBlip = nil
