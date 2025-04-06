@@ -2,7 +2,7 @@ Config = {}
 
 -- General Settings
 Config.UseTarget = true -- Use target system (true) or DrawText (false)
-Config.TargetSystem = 'qb' -- Options: 'qb' for qb-target, 'ox' for ox_target
+Config.TargetSystem = 'ox' -- Options: 'qb' for qb-target, 'ox' for ox_target
 
 -- Application Management System
 Config.ApplicationSystem = 'internal' -- Options: 'internal' for built-in system, 'dw-bossmenu' for external dw-bossmenu
